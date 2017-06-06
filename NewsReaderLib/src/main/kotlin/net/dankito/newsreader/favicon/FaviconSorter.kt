@@ -4,12 +4,15 @@ import net.dankito.newsreader.util.SimpleImageInfo
 import net.dankito.newsreader.util.web.IWebClient
 import net.dankito.newsreader.util.web.OkHttpWebClient
 import net.dankito.newsreader.util.web.RequestParameters
+import org.slf4j.LoggerFactory
 
 
 class FaviconSorter {
 
     companion object {
         val DEFAULT_MIN_SIZE = 32
+
+        private val log = LoggerFactory.getLogger(FaviconSorter::class.java)
     }
 
 
@@ -17,7 +20,7 @@ class FaviconSorter {
 
 
     fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, maxSize: Int? = null, returnSquarishOneIfPossible: Boolean = false) : Favicon? {
-        var bestIcon : Favicon? = null
+        val bestIcon : Favicon? = null
 
         // return icon with largest size
         favicons.filter { doesFitSize(it, minSize, maxSize, returnSquarishOneIfPossible) }.sortedByDescending { it.size }.firstOrNull()?.let {
@@ -100,14 +103,14 @@ class FaviconSorter {
 
             val parameters = RequestParameters(iconUrl)
             parameters.setHasStringResponse(false)
-            parameters.setDownloadProgressListener { progress, downloadedChunk -> downloadedBytes.addAll(downloadedChunk.toList()) }
+            parameters.setDownloadProgressListener { _, downloadedChunk -> downloadedBytes.addAll(downloadedChunk.toList()) }
 
             val response = webClient.get(parameters)
             if (response != null && response.isSuccessful) {
                 val imageInfo = SimpleImageInfo(downloadedBytes.toByteArray())
                 return Size(imageInfo.width, imageInfo.height)
             }
-        } catch(e: Exception) { } // TODO: log
+        } catch(e: Exception) { log.error("Could not retrieve icon size for url $iconUrl", e) }
 
         return null
     }
