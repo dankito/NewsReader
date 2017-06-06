@@ -215,7 +215,7 @@ class ArticleSummaryActivity : AppCompatActivity() {
 
         val viewArticleIntent = Intent(this, ViewArticleActivity::class.java)
 
-        viewArticleIntent.putExtra(ViewArticleActivity.ARTICLE_INTENT_EXTRA_NAME, serializedArticle);
+        viewArticleIntent.putExtra(ViewArticleActivity.ARTICLE_INTENT_EXTRA_NAME, serializedArticle)
 
         startActivity(viewArticleIntent)
     }
@@ -224,7 +224,7 @@ class ArticleSummaryActivity : AppCompatActivity() {
         val errorMessage = getString(R.string.error_could_not_extract_article_from_url, item.url, extractionError.localizedMessage)
 
         runOnUiThread {
-            var builder = AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this)
 
             builder.setMessage(errorMessage)
 
