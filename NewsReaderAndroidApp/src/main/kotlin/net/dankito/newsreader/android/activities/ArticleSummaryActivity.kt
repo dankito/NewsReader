@@ -24,6 +24,7 @@ import net.dankito.newsreader.serialization.JacksonJsonSerializer
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfig
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfigManager
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class ArticleSummaryActivity : AppCompatActivity() {
 
@@ -150,18 +151,24 @@ class ArticleSummaryActivity : AppCompatActivity() {
     private fun showExtractorIcon(config: ArticleSummaryExtractorConfig) {
         config.iconUrl?.let { imageCache.getCachedForRetrieveIconForUrlAsync(it) { result ->
                 result.result?.let { iconPath ->
-                    try {
-                        val icon = BitmapFactory.decodeFile(iconPath.path)
-                        val scaledSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24.toFloat(), resources.displayMetrics).toInt()
-                        val scaledIcon = Bitmap.createScaledBitmap(icon,  scaledSize, scaledSize, false)
-                        icon.recycle()
-
-                        runOnUiThread {
-                            supportActionBar?.setIcon(BitmapDrawable(resources, scaledIcon))
-                        }
-                    } catch(e: Exception) { log.error("Could not load icon from url " + config.iconUrl, e) }
+                    showExtractorIconInActionBar(iconPath, config)
                 }
             }
+        }
+    }
+
+    private fun showExtractorIconInActionBar(iconPath: File, config: ArticleSummaryExtractorConfig) {
+        try {
+            val icon = BitmapFactory.decodeFile(iconPath.path)
+            val scaledSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24.toFloat(), resources.displayMetrics).toInt()
+            val scaledIcon = Bitmap.createScaledBitmap(icon, scaledSize, scaledSize, false)
+            icon.recycle()
+
+            runOnUiThread {
+                supportActionBar?.setIcon(BitmapDrawable(resources, scaledIcon))
+            }
+        } catch(e: Exception) {
+            log.error("Could not load icon from url " + config.iconUrl, e)
         }
     }
 
