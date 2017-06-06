@@ -1,6 +1,5 @@
 package net.dankito.newsreader.android.dialogs
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -14,7 +13,6 @@ import kotlinx.android.synthetic.main.dialog_add_article_summary_extractor.view.
 import net.dankito.newsreader.R
 import net.dankito.newsreader.android.activities.ArticleSummaryActivity
 import net.dankito.newsreader.android.adapter.FoundFeedAddressesAdapter
-import net.dankito.newsreader.android.util.AndroidFileStorageService
 import net.dankito.newsreader.model.FeedArticleSummary
 import net.dankito.newsreader.rss.FeedAddress
 import net.dankito.newsreader.rss.FeedAddressExtractor
@@ -24,7 +22,7 @@ import net.dankito.newsreader.serialization.JacksonJsonSerializer
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfigManager
 
 
-class AddArticleSummaryExtractorDialog : DialogFragment() {
+class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSummaryExtractorConfigManager) : DialogFragment() {
 
     companion object {
         val TAG = "ADD_ARTICLE_SUMMARY_EXTRACTOR_DIALOG"
@@ -35,20 +33,12 @@ class AddArticleSummaryExtractorDialog : DialogFragment() {
 
     private val feedAddressExtractor = FeedAddressExtractor() // TODO: inject
 
-    private lateinit var extractorsConfigManager: ArticleSummaryExtractorConfigManager // TODO: inject
-
     private val serializer: ISerializer = JacksonJsonSerializer() // TODO: inject
 
     private val feedAddressesAdapter = FoundFeedAddressesAdapter()
 
     private var lstFeedSearchResults: ListView? = null
 
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        extractorsConfigManager = ArticleSummaryExtractorConfigManager(AndroidFileStorageService(activity))
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.dialog_add_article_summary_extractor, container)

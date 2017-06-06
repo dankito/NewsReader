@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        adapter = ArticleSummaryExtractorsAdapter(extractorsConfigManager.getConfigs())
+        adapter = ArticleSummaryExtractorsAdapter(this.applicationContext, extractorsConfigManager.getConfigs())
 
         lstvwArticleSummaryExtractors.adapter = adapter
         lstvwArticleSummaryExtractors.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showAddArticleSummaryExtractorView() {
-        val editNameDialog = AddArticleSummaryExtractorDialog()
+        val editNameDialog = AddArticleSummaryExtractorDialog(extractorsConfigManager)
         editNameDialog.show(supportFragmentManager, AddArticleSummaryExtractorDialog.TAG)
     }
 
