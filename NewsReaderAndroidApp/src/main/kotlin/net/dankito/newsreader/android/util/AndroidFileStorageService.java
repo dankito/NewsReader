@@ -4,6 +4,7 @@ import android.content.Context;
 
 import net.dankito.newsreader.util.JavaFileStorageService;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +17,12 @@ public class AndroidFileStorageService extends JavaFileStorageService {
 
   public AndroidFileStorageService(Context context) {
     this.context = context;
+  }
+
+
+  @Override
+  public File getFileInDataFolder(String filename) {
+    return new File(context.getFilesDir(), filename);
   }
 
 

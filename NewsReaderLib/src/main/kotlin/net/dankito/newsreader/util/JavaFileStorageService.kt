@@ -5,6 +5,16 @@ import java.io.*
 
 open class JavaFileStorageService : IFileStorageService {
 
+    companion object {
+        private val DATA_FOLDER_NAME = "data"
+    }
+
+
+    override fun getFileInDataFolder(filename: String) : File {
+        return File(DATA_FOLDER_NAME, filename)
+    }
+
+
     @Throws(Exception::class)
     override fun writeToTextFile(fileContent: String, filename: String) {
         val outputStreamWriter = OutputStreamWriter(createFileOutputStream(filename))

@@ -1,11 +1,15 @@
 package net.dankito.newsreader.util
 
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 
 
 interface IFileStorageService {
+
+    fun getFileInDataFolder(filename: String) : File
+
 
     @Throws(Exception::class)
     fun readFromTextFile(filename: String): String?
