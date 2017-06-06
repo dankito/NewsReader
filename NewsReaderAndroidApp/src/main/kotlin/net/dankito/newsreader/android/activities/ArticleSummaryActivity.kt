@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
 import android.view.Menu
@@ -197,6 +198,7 @@ class ArticleSummaryActivity : AppCompatActivity() {
         articleExtractors.getExtractorForItem(item)?.let { extractor ->
             extractor.extractArticleAsync(item) { asyncResult ->
                 asyncResult.result?.let { showArticle(it) }
+                asyncResult.error?.let { showArticleExtractionError(item, it) }
             }
         }
     }
@@ -209,6 +211,20 @@ class ArticleSummaryActivity : AppCompatActivity() {
         viewArticleIntent.putExtra(ViewArticleActivity.ARTICLE_INTENT_EXTRA_NAME, serializedArticle);
 
         startActivity(viewArticleIntent)
+    }
+
+    private fun showArticleExtractionError(item: ArticleSummaryItem, extractionError: Exception) {
+        val errorMessage = getString(R.string.error_could_not_extract_article_from_url, item.url, extractionError.localizedMessage)
+
+        runOnUiThread {
+            var builder = AlertDialog.Builder(this)
+
+            builder.setMessage(errorMessage)
+
+            builder.setNegativeButton(android.R.string.ok, null)
+
+            builder.create().show()
+        }
     }
 
 }
