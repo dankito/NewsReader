@@ -90,15 +90,19 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
         extractorsConfigManager.addFeed(feedUrl, summary)
 
         activity.runOnUiThread {
-            val intent = Intent(activity, ArticleSummaryActivity::class.java)
-
-            intent.putExtra(ArticleSummaryActivity.EXTRACTOR_URL_INTENT_EXTRA_NAME, feedUrl)
-            intent.putExtra(ArticleSummaryActivity.LAST_LOADED_SUMMARY_INTENT_EXTRA_NAME, serializer.serializeObject(summary))
-
-            startActivity(intent)
+            showArticleSummaryActivity(feedUrl, summary)
 
             dismiss()
         }
+    }
+
+    private fun showArticleSummaryActivity(feedUrl: String, summary: FeedArticleSummary) {
+        val intent = Intent(activity, ArticleSummaryActivity::class.java)
+
+        intent.putExtra(ArticleSummaryActivity.EXTRACTOR_URL_INTENT_EXTRA_NAME, feedUrl)
+        intent.putExtra(ArticleSummaryActivity.LAST_LOADED_SUMMARY_INTENT_EXTRA_NAME, serializer.serializeObject(summary))
+
+        startActivity(intent)
     }
 
     private fun showFoundFeedAddresses(result: List<FeedAddress>) {
