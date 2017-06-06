@@ -61,7 +61,7 @@ public class ArticleTextExtractor {
             throw new NullPointerException("missing document");
 
         // now remove the clutter
-//        prepareDocument(doc);
+        prepareDocument(doc);
 
         // init elements
         Collection<Element> nodes = getNodes(doc);
@@ -95,7 +95,6 @@ public class ArticleTextExtractor {
                 ret = "<img src=\""+ogImage+"\"><br>\n"+ret;
             }
 
-            ret = "<html>" + doc.head().outerHtml() + "<body>" + ret + "</body></html>";
             return ret;
         }
 
@@ -224,7 +223,8 @@ public class ArticleTextExtractor {
     private static void prepareDocument(Document doc) {
         // stripUnlikelyCandidates(doc);
         removeSelectsAndOptions(doc);
-        removeScriptsAndStyles(doc);
+        removeScripts(doc);
+        removeStyles(doc);
     }
 
     /**
@@ -244,7 +244,8 @@ public class ArticleTextExtractor {
 //            }
 //        }
 //    }
-    private static Document removeScriptsAndStyles(Document doc) {
+
+    private static Document removeScripts(Document doc) {
         Elements scripts = doc.getElementsByTag("script");
         for (Element item : scripts) {
             item.remove();
@@ -255,6 +256,10 @@ public class ArticleTextExtractor {
             item.remove();
         }
 
+        return doc;
+    }
+
+    private static Document removeStyles(Document doc) {
         Elements styles = doc.getElementsByTag("style");
         for (Element style : styles) {
             style.remove();
