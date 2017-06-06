@@ -20,7 +20,7 @@ class FaviconSorter {
         var bestIcon : Favicon? = null
 
         // return icon with largest size
-        favicons.filter { applyFilter(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
+        favicons.filter { doesFitSize(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -32,7 +32,7 @@ class FaviconSorter {
             faviconsWithUnknownSize.add(it)
         }
 
-        faviconsWithUnknownSize.filter { applyFilter(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
+        faviconsWithUnknownSize.filter { doesFitSize(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -43,28 +43,32 @@ class FaviconSorter {
         return bestIcon
     }
 
-    private fun applyFilter(favicon: Favicon, minSize: Int, maxSize: Int? = null, mustBeSquarish: Boolean) : Boolean {
-        var result = false
-
-        favicon.size?.let { faviconSize ->
-            result = hasMinSize(faviconSize, minSize)
-
-            maxSize?.let { result = result.and(hasMaxSize(faviconSize, maxSize)) }
-
-            if(mustBeSquarish) {
-                result = result.and(faviconSize.isSquare())
-            }
-        }
-
-        return result
-    }
-
-    fun hasMinSize(iconUrl: String, minSize: Int = DEFAULT_MIN_SIZE): Boolean {
+    fun doesFitSize(iconUrl: String, minSize: Int = DEFAULT_MIN_SIZE, maxSize: Int? = null, mustBeSquarish: Boolean = false): Boolean {
         retrieveIconSize(iconUrl)?.let {
-            return hasMinSize(it, minSize)
+            return doesFitSize(it, minSize, maxSize, mustBeSquarish)
         }
 
         return false
+    }
+
+    private fun doesFitSize(favicon: Favicon, minSize: Int, maxSize: Int? = null, mustBeSquarish: Boolean) : Boolean {
+        favicon.size?.let { faviconSize ->
+            return doesFitSize(faviconSize, minSize, maxSize, mustBeSquarish)
+        }
+
+        return false
+    }
+
+    private fun doesFitSize(faviconSize: Size, minSize: Int, maxSize: Int? = null, mustBeSquarish: Boolean) : Boolean {
+        var result = hasMinSize(faviconSize, minSize)
+
+        maxSize?.let { result = result.and(hasMaxSize(faviconSize, maxSize)) }
+
+        if(mustBeSquarish) {
+            result = result.and(faviconSize.isSquare())
+        }
+
+        return result
     }
 
     private fun hasMinSize(iconSize: Size?, minSize: Int = DEFAULT_MIN_SIZE): Boolean {

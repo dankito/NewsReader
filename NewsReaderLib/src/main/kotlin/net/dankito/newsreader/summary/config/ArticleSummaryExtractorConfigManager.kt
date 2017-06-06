@@ -89,7 +89,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
     private fun loadIconAsync(url: String, callback: (String?) -> Unit)  {
         faviconExtractor.extractFaviconsAsync(url) {
             if(it.result != null) {
-                callback(faviconSorter.getBestIcon(it.result)?.url)
+                callback(faviconSorter.getBestIcon(it.result, mustBeSquarish = true)?.url)
             }
             else {
                 callback(null)
@@ -119,7 +119,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
 
     private fun getIconForFeed(summary: FeedArticleSummary, callback: (iconUrl: String?) -> Unit) {
         summary.imageUrl?.let { iconUrl ->
-            if(faviconSorter.hasMinSize(iconUrl)) {
+            if(faviconSorter.doesFitSize(iconUrl, mustBeSquarish = true)) {
                 return callback(iconUrl)
             }
         }
