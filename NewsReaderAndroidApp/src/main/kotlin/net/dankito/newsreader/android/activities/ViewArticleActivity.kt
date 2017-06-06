@@ -1,0 +1,79 @@
+package net.dankito.newsreader.android.activities
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_view_article.*
+import net.dankito.newsreader.R
+import net.dankito.newsreader.model.Article
+import net.dankito.newsreader.serialization.ISerializer
+import net.dankito.newsreader.serialization.JacksonJsonSerializer
+
+
+
+class ViewArticleActivity : AppCompatActivity() {
+
+    companion object {
+        const val ARTICLE_INTENT_EXTRA_NAME = "ARTICLE"
+    }
+
+
+    private val serializer: ISerializer = JacksonJsonSerializer()
+
+    private var article: Article? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setupUI()
+
+        savedInstanceState?.let { restoreState(it) }
+
+        intent.getStringExtra(ARTICLE_INTENT_EXTRA_NAME)?.let { showSerializedArticle(it) }
+    }
+
+    private fun restoreState(savedInstanceState: Bundle) {
+        savedInstanceState.getString(ARTICLE_INTENT_EXTRA_NAME)?.let { showSerializedArticle(it) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        outState?.let { outState ->
+            outState.putString(ARTICLE_INTENT_EXTRA_NAME, null) // fallback
+            article?.let { outState.putString(ARTICLE_INTENT_EXTRA_NAME, serializer.serializeObject(it)) }
+        }
+    }
+
+    private fun setupUI() {
+        setContentView(R.layout.activity_view_article)
+
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar?.title = ""
+
+        val settings = wbArticle.getSettings()
+        settings.defaultTextEncodingName = "UTF-8"
+        settings.javaScriptEnabled = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSerializedArticle(serializedArticle: String) {
+        this.article = serializer.deserializeObject(serializedArticle, Article::class.java)
+
+        wbArticle.loadDataWithBaseURL(article?.url, article?.content, "text/html; charset=UTF-8", null, null)
+    }
+
+}

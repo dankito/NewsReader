@@ -1,0 +1,25 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="list_item_article_summary_extractor_height">70dp</dimen>
+    <dimen name="list_item_article_summary_extractor_margin">4dp</dimen>
+    <dimen name="list_item_article_summary_extractor_preview_image_size">60dp</dimen>
+    <dimen name="list_item_article_summary_extractor_preview_image_margin_right">6dp</dimen>
+
+    <dimen name="list_item_article_summary_item_preview_image_size">80dp</dimen>
+    <dimen name="list_item_article_summary_item_preview_image_margin_right">6dp</dimen>
+
+    <dimen name="dialog_add_article_summary_extractor_margin_left_and_right">24dp</dimen>
+    <dimen name="dialog_add_article_summary_extractor_text_feed_or_website_url_margin_top_and_bottom">6dp</dimen>
+    <dimen name="dialog_add_article_summary_extractor_listview_feed_search_results_margin_top">6dp</dimen>
+
+    <dimen name="list_item_found_feed_address_height">40dp</dimen>
+    <dimen name="list_item_found_feed_address_margin_left_and_right">0dp</dimen>
+    <dimen name="list_item_found_feed_address_feed_url_margin_bottom">6dp</dimen>
+
+</resources>

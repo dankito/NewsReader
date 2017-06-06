@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">News Reader</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="activity_article_summary_menu_reload">Reload</string>
+    <string name="activity_article_summary_menu_load_more">Load more</string>
+
+    <string name="dialog_add_article_summary_extractor_feed_or_website_url">Feed or website url</string>
+    <string name="dialog_add_article_summary_extractor_check_feed_or_website_url">Check</string>
+
+    <string formatted="false" name="error_no_rss_or_atom_feed_found_for_url">No RSS or Atom feed found for url %s</string>
+    <string formatted="false" name="error_cannot_read_feed_or_extract_feed_addresses_from_url">Cannot read feed or extract feed addresses from url %s: %s</string>
+
+</resources>

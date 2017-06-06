@@ -1,0 +1,2 @@
+include ':NewsReaderAndroidApp'
+include ':NewsReaderLib'
