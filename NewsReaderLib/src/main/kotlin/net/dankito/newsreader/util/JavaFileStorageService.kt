@@ -35,43 +35,29 @@ open class JavaFileStorageService : IFileStorageService {
     override fun readFromTextFile(filename: String): String? {
         val inputStream = createFileInputStream(filename)
 
-        if (inputStream != null) {
-            val inputStreamReader = InputStreamReader(inputStream)
-            val bufferedReader = BufferedReader(inputStreamReader)
+        val inputStreamReader = InputStreamReader(inputStream)
+        val bufferedReader = BufferedReader(inputStreamReader)
 
-            var fileContent = bufferedReader.use { it.readLines() }.joinToString(separator = "") { it }
+        val fileContent = bufferedReader.use { it.readLines() }.joinToString(separator = "") { it }
 
-            bufferedReader.close()
-            inputStream.close()
+        bufferedReader.close()
+        inputStream.close()
 
-            return fileContent
-        }
-
-        return null
+        return fileContent
     }
 
     @Throws(Exception::class)
     override fun readFromBinaryFile(filename: String): ByteArray? {
         val inputStream = createFileInputStream(filename)
 
-        if (inputStream != null) {
-            val buffer = ByteArrayOutputStream()
+        val buffer = ByteArrayOutputStream()
 
-            var nRead: Int = 0
-            val data = ByteArray(16384)
+        inputStream.copyTo(buffer, 16384)
 
-            while (nRead > -1) {
-                nRead = inputStream.read(data, 0, data.size)
-                buffer.write(data, 0, nRead)
-            }
+        buffer.flush()
+        inputStream.close()
 
-            buffer.flush()
-            inputStream.close()
-
-            return buffer.toByteArray()
-        }
-
-        return null
+        return buffer.toByteArray()
     }
 
     @Throws(FileNotFoundException::class)
