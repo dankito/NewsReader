@@ -49,7 +49,7 @@ class FaviconSorterTest {
                 Favicon("https://assets.guim.co.uk/images/2170b16eb045a34f8c79761b203627b4/fallback-logo.png", FaviconType.OpenGraphImage),
                 bestIcon)
 
-        val result = underTest.getBestIcon(favicons, mustBeSquarish = false)
+        val result = underTest.getBestIcon(favicons, returnSquarishOneIfPossible = false)
         assertThat(result, `is`(bestIcon))
     }
 
@@ -67,7 +67,7 @@ class FaviconSorterTest {
                 Favicon("https://assets.guim.co.uk/images/2170b16eb045a34f8c79761b203627b4/fallback-logo.png", FaviconType.OpenGraphImage),
                 bestIcon)
 
-        val result = underTest.getBestIcon(favicons, mustBeSquarish = true)
+        val result = underTest.getBestIcon(favicons, returnSquarishOneIfPossible = true)
         assertThat(result, `is`(bestIcon))
     }
 
@@ -141,7 +141,7 @@ class FaviconSorterTest {
                 Favicon("http://img.zeit.de/static/img/ZO-ipad-114x114.png", FaviconType.AppleTouchPrecomposed),
                 bestIcon)
 
-        val result = underTest.getBestIcon(favicons, mustBeSquarish = true)
+        val result = underTest.getBestIcon(favicons, returnSquarishOneIfPossible = true)
         assertThat(result, `is`(bestIcon))
     }
 
@@ -165,6 +165,15 @@ class FaviconSorterTest {
         val favicons = listOf<Favicon>(Favicon("http://www.der-postillon.com/favicon.ico", FaviconType.Icon, type = "image/x-icon"), bestIcon)
 
         val result = underTest.getBestIcon(favicons)
+        assertThat(result, `is`(bestIcon))
+    }
+
+    @Test
+    fun getBestIconForPostillon_NoSquarishIconAvailable_ReturnsIconWithBestSizeThen() {
+        val bestIcon = Favicon("http://4.bp.blogspot.com/-46xU6sntzl4/UVHLh1NGfwI/AAAAAAAAUlY/RiARs4-toWk/s800/Logo.jpg", FaviconType.OpenGraphImage)
+        val favicons = listOf<Favicon>(Favicon("http://www.der-postillon.com/favicon.ico", FaviconType.Icon, type = "image/x-icon"), bestIcon)
+
+        val result = underTest.getBestIcon(favicons, returnSquarishOneIfPossible = true)
         assertThat(result, `is`(bestIcon))
     }
 

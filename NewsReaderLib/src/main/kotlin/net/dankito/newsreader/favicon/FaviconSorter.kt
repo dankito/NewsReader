@@ -16,24 +16,27 @@ class FaviconSorter {
     private val webClient : IWebClient = OkHttpWebClient() // TODO: inject
 
 
-    fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, maxSize: Int? = null, mustBeSquarish: Boolean = false) : Favicon? {
+    fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, maxSize: Int? = null, returnSquarishOneIfPossible: Boolean = false) : Favicon? {
         var bestIcon : Favicon? = null
 
         // return icon with largest size
-        favicons.filter { doesFitSize(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
-            if (hasMinSize(it.size)) {
-                return it
-            }
+        favicons.filter { doesFitSize(it, minSize, maxSize, returnSquarishOneIfPossible) }.sortedByDescending { it.size }.firstOrNull()?.let {
+            return it
         }
 
+        // ok, sorting by known sizes didn't work, so retrieve sizes of icons which's size isn't known yet
         val faviconsWithUnknownSize = mutableListOf<Favicon>()
         favicons.filter { it.size == null }.forEach {
             it.size = retrieveIconSize(it)
             faviconsWithUnknownSize.add(it)
         }
 
-        faviconsWithUnknownSize.filter { doesFitSize(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
-            if (hasMinSize(it.size)) {
+        faviconsWithUnknownSize.filter { doesFitSize(it, minSize, maxSize, returnSquarishOneIfPossible) }.sortedByDescending { it.size }.firstOrNull()?.let {
+            return it
+        }
+
+        if(returnSquarishOneIfPossible) { // then try without returnSquarishOneIfPossible
+            favicons.filter { doesFitSize(it, minSize, maxSize, false) }.sortedByDescending { it.size }.firstOrNull()?.let {
                 return it
             }
         }

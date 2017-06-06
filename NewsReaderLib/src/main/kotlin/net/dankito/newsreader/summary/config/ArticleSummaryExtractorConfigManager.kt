@@ -89,7 +89,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
     private fun loadIconAsync(url: String, callback: (String?) -> Unit)  {
         faviconExtractor.extractFaviconsAsync(url) {
             if(it.result != null) {
-                callback(faviconSorter.getBestIcon(it.result, mustBeSquarish = true)?.url)
+                callback(faviconSorter.getBestIcon(it.result, returnSquarishOneIfPossible = true)?.url)
             }
             else {
                 callback(null)
