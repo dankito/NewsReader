@@ -223,7 +223,7 @@ public class ArticleTextExtractor {
     private static void prepareDocument(Document doc) {
         // stripUnlikelyCandidates(doc);
         removeSelectsAndOptions(doc);
-        removeScripts(doc);
+//        removeScripts(doc);
         removeStyles(doc);
     }
 
