@@ -92,6 +92,10 @@ class FeedAddressExtractor {
             var urlInstance = URL(URL(siteUrl), url)
             absoluteUrl = urlInstance.toExternalForm()
         }
+        else if(url.startsWith("http") == false) {
+            var urlInstance = URL(URL(siteUrl), url)
+            absoluteUrl = urlInstance.toExternalForm()
+        }
 
         return absoluteUrl
     }
