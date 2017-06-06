@@ -8,14 +8,19 @@ import net.dankito.newsreader.util.web.RequestParameters
 
 class FaviconSorter {
 
+    companion object {
+        val DEFAULT_MIN_SIZE = 32
+    }
+
+
     private val webClient : IWebClient = OkHttpWebClient() // TODO: inject
 
 
-    fun getBestIcon(favicons: List<Favicon>) : Favicon? {
+    fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, mustBeSquarish: Boolean = false) : Favicon? {
         var bestIcon : Favicon? = null
 
         // return icon with largest size
-        favicons.filter { it.size != null }.sortedByDescending { it.size }.firstOrNull()?.let {
+        favicons.filter { applyFilter(it, minSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -27,7 +32,7 @@ class FaviconSorter {
             faviconsWithUnknownSize.add(it)
         }
 
-        faviconsWithUnknownSize.sortedByDescending { it.size }.firstOrNull()?.let {
+        faviconsWithUnknownSize.filter { applyFilter(it, minSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -38,17 +43,32 @@ class FaviconSorter {
         return bestIcon
     }
 
-    fun hasMinSize(iconUrl: String): Boolean {
-        retrieveIconSize(iconUrl)?.let {
-            return hasMinSize(it)
+    private fun applyFilter(favicon: Favicon, minSize: Int, mustBeSquarish: Boolean) : Boolean {
+        favicon.size?.let {
+            if(hasMinSize(it, minSize)) {
+                if(mustBeSquarish) {
+                    return it.isSquare()
+                }
+                else {
+                    return true
+                }
+            }
         }
 
         return false
     }
 
-    private fun hasMinSize(iconSize: Size?): Boolean {
+    fun hasMinSize(iconUrl: String, minSize: Int = DEFAULT_MIN_SIZE): Boolean {
+        retrieveIconSize(iconUrl)?.let {
+            return hasMinSize(it, minSize)
+        }
+
+        return false
+    }
+
+    private fun hasMinSize(iconSize: Size?, minSize: Int = DEFAULT_MIN_SIZE): Boolean {
         if(iconSize != null) {
-            return iconSize.width > 16 && iconSize.height > 16
+            return iconSize.width > minSize && iconSize.height > minSize
         }
 
         return false
