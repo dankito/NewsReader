@@ -5,10 +5,16 @@ import net.dankito.newsreader.model.Article
 import net.dankito.newsreader.model.ArticleSummaryItem
 import net.dankito.newsreader.summary.ArticleExtractorBase
 import org.jsoup.nodes.Document
+import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 
 
 class DefaultArticleExtractor : ArticleExtractorBase(), IArticleExtractor {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(DefaultArticleExtractor::class.java)
+    }
+
 
     override fun extractArticleAsync(item: ArticleSummaryItem, callback: (AsyncResult<Article>) -> Unit) {
         thread {
@@ -21,6 +27,7 @@ class DefaultArticleExtractor : ArticleExtractorBase(), IArticleExtractor {
                     callback(AsyncResult(false))
                 }
             } catch(e: Exception) {
+                log.error("Could not extract Article", e)
                 callback(AsyncResult(false, e))
             }
         }
