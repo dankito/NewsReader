@@ -1,17 +1,20 @@
 package net.dankito.newsreader.android.activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_article_summary.*
 import net.dankito.newsreader.R
 import net.dankito.newsreader.android.adapter.ArticleSummaryAdapter
 import net.dankito.newsreader.android.util.AndroidFileStorageService
 import net.dankito.newsreader.article.ArticleExtractors
+import net.dankito.newsreader.icon.ImageCache
 import net.dankito.newsreader.model.Article
 import net.dankito.newsreader.model.ArticleSummary
 import net.dankito.newsreader.model.ArticleSummaryItem
@@ -20,7 +23,6 @@ import net.dankito.newsreader.serialization.JacksonJsonSerializer
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfig
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfigManager
 import org.slf4j.LoggerFactory
-import kotlin.concurrent.thread
 
 class ArticleSummaryActivity : AppCompatActivity() {
 
@@ -40,6 +42,8 @@ class ArticleSummaryActivity : AppCompatActivity() {
 
     private var extractorConfig: ArticleSummaryExtractorConfig? = null
 
+    private lateinit var imageCache: ImageCache
+
     private val adapter = ArticleSummaryAdapter()
 
     private var lastLoadedSummary: ArticleSummary? = null
@@ -51,6 +55,7 @@ class ArticleSummaryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         extractorsConfigManager = ArticleSummaryExtractorConfigManager(AndroidFileStorageService(this))
+        imageCache = ImageCache(AndroidFileStorageService(this.applicationContext))
 
         setupUI()
 
@@ -142,14 +147,21 @@ class ArticleSummaryActivity : AppCompatActivity() {
     }
 
     private fun showExtractorIcon(config: ArticleSummaryExtractorConfig) {
-        thread {
-            try {
-                val icon = Picasso.with(this).load(config.iconUrl).get()
-                runOnUiThread {
-                    supportActionBar?.setIcon(BitmapDrawable(icon))
+        config.iconUrl?.let { imageCache.getCachedForRetrieveIconForUrlAsync(it) { result ->
+                result.result?.let { iconPath ->
+                    try {
+                        val icon = BitmapFactory.decodeFile(iconPath.path)
+                        val scaledSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24.toFloat(), resources.displayMetrics).toInt()
+                        val scaledIcon = Bitmap.createScaledBitmap(icon,  scaledSize, scaledSize, false)
+                        icon.recycle()
+
+                        runOnUiThread {
+                            supportActionBar?.setIcon(BitmapDrawable(resources, scaledIcon))
+                        }
+                    } catch(e: Exception) { log.error("Could not load icon from url " + config.iconUrl, e) }
                 }
-            } catch(e: Exception) { log.error("Could not load icon from url " + config.iconUrl, e) }
-        }.start()
+            }
+        }
     }
 
     private fun extractArticlesSummary() {
