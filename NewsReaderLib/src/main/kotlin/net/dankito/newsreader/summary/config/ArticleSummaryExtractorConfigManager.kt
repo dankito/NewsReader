@@ -1,7 +1,7 @@
 package net.dankito.newsreader.summary.config
 
+import net.dankito.newsreader.favicon.FaviconComparator
 import net.dankito.newsreader.favicon.FaviconExtractor
-import net.dankito.newsreader.favicon.FaviconSorter
 import net.dankito.newsreader.model.FeedArticleSummary
 import net.dankito.newsreader.serialization.ISerializer
 import net.dankito.newsreader.serialization.JacksonJsonSerializer
@@ -24,7 +24,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
 
     private val faviconExtractor = FaviconExtractor() // TODO: inject
 
-    private val faviconSorter = FaviconSorter() // TODO: inject
+    private val faviconComparator = FaviconComparator() // TODO: inject
 
     private val serializer: ISerializer = JacksonJsonSerializer() // TODO: inject
 
@@ -89,7 +89,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
     private fun loadIconAsync(url: String, callback: (String?) -> Unit)  {
         faviconExtractor.extractFaviconsAsync(url) {
             if(it.result != null) {
-                callback(faviconSorter.getBestIcon(it.result, returnSquarishOneIfPossible = true)?.url)
+                callback(faviconComparator.getBestIcon(it.result, returnSquarishOneIfPossible = true)?.url)
             }
             else {
                 callback(null)
@@ -119,7 +119,7 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
 
     private fun getIconForFeed(summary: FeedArticleSummary, callback: (iconUrl: String?) -> Unit) {
         summary.imageUrl?.let { iconUrl ->
-            if(faviconSorter.doesFitSize(iconUrl, mustBeSquarish = true)) {
+            if(faviconComparator.doesFitSize(iconUrl, mustBeSquarish = true)) {
                 return callback(iconUrl)
             }
         }

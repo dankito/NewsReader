@@ -4,9 +4,9 @@ import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-class FaviconSorterTest {
+class FaviconComparatorTest {
 
-    private val underTest = FaviconSorter()
+    private val underTest = FaviconComparator()
 
 
     @Test

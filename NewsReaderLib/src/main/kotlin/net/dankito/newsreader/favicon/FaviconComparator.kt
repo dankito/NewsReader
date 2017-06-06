@@ -7,12 +7,12 @@ import net.dankito.newsreader.util.web.RequestParameters
 import org.slf4j.LoggerFactory
 
 
-class FaviconSorter {
+class FaviconComparator {
 
     companion object {
         val DEFAULT_MIN_SIZE = 32
 
-        private val log = LoggerFactory.getLogger(FaviconSorter::class.java)
+        private val log = LoggerFactory.getLogger(FaviconComparator::class.java)
     }
 
 
