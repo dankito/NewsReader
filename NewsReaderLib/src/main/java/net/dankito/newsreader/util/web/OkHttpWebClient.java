@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 
@@ -243,7 +244,9 @@ public class OkHttpWebClient implements IWebClient {
         }
 
         downloaded += read;
-        publishProgress(parameters, buffer, downloaded, contentLength); // TODO: shouldn't we pass just the real downloaded bytes, not the whole buffer with may senseless, undownloaded data (e.g. 0 values)
+
+        publishProgress(parameters, buffer, downloaded, contentLength, read);
+
         if(isCancelled(parameters)) {
           return new WebClientResponse(false);
         }
@@ -262,6 +265,16 @@ public class OkHttpWebClient implements IWebClient {
 
   protected boolean isCancelled(RequestParameters parameters) {
     return false; // TODO: implement mechanism to abort download
+  }
+
+  protected void publishProgress(RequestParameters parameters, byte[] buffer, long downloaded, long contentLength, int read) {
+    byte[] downloadedData = buffer;
+
+    if(read < parameters.getDownloadBufferSize()) {
+      downloadedData = Arrays.copyOfRange(buffer, 0, read);
+    }
+
+    publishProgress(parameters, downloadedData, downloaded, contentLength);
   }
 
   protected void publishProgress(RequestParameters parameters, byte[] downloadedChunk, long currentlyDownloaded, long total) {
