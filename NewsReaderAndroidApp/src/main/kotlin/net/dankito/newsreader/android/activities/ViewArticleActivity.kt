@@ -61,6 +61,25 @@ class ViewArticleActivity : AppCompatActivity() {
         settings.javaScriptEnabled = true
     }
 
+
+    override fun onPause() {
+        pauseWebView()
+
+        super.onPause()
+    }
+
+    private fun pauseWebView() {
+        // to prevent that a video keeps on playing in WebView when navigating away from ViewArticleActivity
+        // see https://stackoverflow.com/a/6230902
+        try {
+            Class.forName("android.webkit.WebView")
+                    .getMethod("onPause")
+                    .invoke(wbArticle)
+
+        } catch(ignored: Exception) { }
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == android.R.id.home) {
             onBackPressed()
