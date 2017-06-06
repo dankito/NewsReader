@@ -26,7 +26,7 @@ open class JavaFileStorageService : IFileStorageService {
     }
 
     @Throws(FileNotFoundException::class)
-    protected open fun createFileOutputStream(filename: String): OutputStream {
+    override fun createFileOutputStream(filename: String): OutputStream {
         return FileOutputStream(filename)
     }
 
@@ -61,7 +61,7 @@ open class JavaFileStorageService : IFileStorageService {
     }
 
     @Throws(FileNotFoundException::class)
-    protected open fun createFileInputStream(filename: String): InputStream? {
+    override fun createFileInputStream(filename: String): InputStream {
         return FileInputStream(filename)
     }
 

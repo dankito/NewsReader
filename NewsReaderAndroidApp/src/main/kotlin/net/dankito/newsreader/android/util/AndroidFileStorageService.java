@@ -20,12 +20,12 @@ public class AndroidFileStorageService extends JavaFileStorageService {
 
 
   @Override
-  protected OutputStream createFileOutputStream(String filename) throws FileNotFoundException {
+  public OutputStream createFileOutputStream(String filename) throws FileNotFoundException {
     return context.openFileOutput(filename, Context.MODE_PRIVATE);
   }
 
   @Override
-  protected InputStream createFileInputStream(String filename) throws FileNotFoundException {
+  public InputStream createFileInputStream(String filename) throws FileNotFoundException {
     return context.openFileInput(filename);
   }
 

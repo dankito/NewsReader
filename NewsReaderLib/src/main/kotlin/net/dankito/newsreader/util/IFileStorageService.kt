@@ -1,5 +1,9 @@
 package net.dankito.newsreader.util
 
+import java.io.FileNotFoundException
+import java.io.InputStream
+import java.io.OutputStream
+
 
 interface IFileStorageService {
 
@@ -9,12 +13,18 @@ interface IFileStorageService {
     @Throws(Exception::class)
     fun readFromBinaryFile(filename: String): ByteArray?
 
+    @Throws(FileNotFoundException::class)
+    fun createFileInputStream(filename: String): InputStream
+
 
     @Throws(Exception::class)
     fun writeToTextFile(fileContent: String, filename: String)
 
     @Throws(Exception::class)
     fun writeToBinaryFile(fileContent: ByteArray, filename: String)
+
+    @Throws(FileNotFoundException::class)
+    fun createFileOutputStream(filename: String): OutputStream
 
 
     fun deleteFolderRecursively(path: String)
