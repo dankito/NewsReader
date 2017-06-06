@@ -16,11 +16,11 @@ class FaviconSorter {
     private val webClient : IWebClient = OkHttpWebClient() // TODO: inject
 
 
-    fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, mustBeSquarish: Boolean = false) : Favicon? {
+    fun getBestIcon(favicons: List<Favicon>, minSize: Int = DEFAULT_MIN_SIZE, maxSize: Int? = null, mustBeSquarish: Boolean = false) : Favicon? {
         var bestIcon : Favicon? = null
 
         // return icon with largest size
-        favicons.filter { applyFilter(it, minSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
+        favicons.filter { applyFilter(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -32,7 +32,7 @@ class FaviconSorter {
             faviconsWithUnknownSize.add(it)
         }
 
-        faviconsWithUnknownSize.filter { applyFilter(it, minSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
+        faviconsWithUnknownSize.filter { applyFilter(it, minSize, maxSize, mustBeSquarish) }.sortedByDescending { it.size }.firstOrNull()?.let {
             if (hasMinSize(it.size)) {
                 return it
             }
@@ -43,19 +43,20 @@ class FaviconSorter {
         return bestIcon
     }
 
-    private fun applyFilter(favicon: Favicon, minSize: Int, mustBeSquarish: Boolean) : Boolean {
-        favicon.size?.let {
-            if(hasMinSize(it, minSize)) {
-                if(mustBeSquarish) {
-                    return it.isSquare()
-                }
-                else {
-                    return true
-                }
+    private fun applyFilter(favicon: Favicon, minSize: Int, maxSize: Int? = null, mustBeSquarish: Boolean) : Boolean {
+        var result = false
+
+        favicon.size?.let { faviconSize ->
+            result = hasMinSize(faviconSize, minSize)
+
+            maxSize?.let { result = result.and(hasMaxSize(faviconSize, maxSize)) }
+
+            if(mustBeSquarish) {
+                result = result.and(faviconSize.isSquare())
             }
         }
 
-        return false
+        return result
     }
 
     fun hasMinSize(iconUrl: String, minSize: Int = DEFAULT_MIN_SIZE): Boolean {
@@ -68,7 +69,15 @@ class FaviconSorter {
 
     private fun hasMinSize(iconSize: Size?, minSize: Int = DEFAULT_MIN_SIZE): Boolean {
         if(iconSize != null) {
-            return iconSize.width > minSize && iconSize.height > minSize
+            return iconSize.width >= minSize && iconSize.height >= minSize
+        }
+
+        return false
+    }
+
+    private fun hasMaxSize(iconSize: Size?, maxSize: Int): Boolean {
+        if(iconSize != null) {
+            return iconSize.width <= maxSize && iconSize.height <= maxSize
         }
 
         return false

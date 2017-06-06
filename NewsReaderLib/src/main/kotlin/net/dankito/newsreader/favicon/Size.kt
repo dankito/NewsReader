@@ -11,4 +11,9 @@ data class Size(val width: Int, val height: Int) : Comparable<Size> {
         return width.compareTo(other.width)
     }
 
+
+    fun isSquare(): Boolean {
+        return width == height
+    }
+
 }

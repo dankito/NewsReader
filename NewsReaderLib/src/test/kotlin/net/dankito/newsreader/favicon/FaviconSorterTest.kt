@@ -49,6 +49,32 @@ class FaviconSorterTest {
     }
 
     @Test
+    fun getBestIconWithMaxSize152ForNewYorkTimes() {
+        val bestIcon = Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed)
+        val favicons = listOf<Favicon>(Favicon("https://static01.nyt.com/favicon.ico", FaviconType.ShortcutIcon),
+                Favicon("https://static01.nyt.com/images/icons/t_logo_291_black.png", FaviconType.OpenGraphImage),
+                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed),
+                Favicon("https://static01.nyt.com/images/icons/ios-default-homescreen-57x57.png", FaviconType.AppleTouchPrecomposed),
+                bestIcon)
+
+        val result = underTest.getBestIcon(favicons, minSize = 32, maxSize = 152)
+        assertThat(result, `is`(bestIcon))
+    }
+
+    @Test
+    fun getBestIconWithMaxSize112ForNewYorkTimes() {
+        val bestIcon = Favicon("https://static01.nyt.com/images/icons/ios-default-homescreen-57x57.png", FaviconType.AppleTouchPrecomposed)
+        val favicons = listOf<Favicon>(Favicon("https://static01.nyt.com/favicon.ico", FaviconType.ShortcutIcon),
+                Favicon("https://static01.nyt.com/images/icons/t_logo_291_black.png", FaviconType.OpenGraphImage),
+                Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed),
+                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed),
+                bestIcon)
+
+        val result = underTest.getBestIcon(favicons, minSize = 32, maxSize = 112)
+        assertThat(result, `is`(bestIcon))
+    }
+
+    @Test
     fun getBestIconForHeise() {
         val bestIcon = Favicon("http://www.heise.de/icons/ho/apple-touch-icon-152.png", FaviconType.AppleTouchPrecomposed, Size(152, 152))
         val favicons = listOf<Favicon>(Favicon("http://www.heise.de/icons/ho/heise_online_facebook_social_graph.png", FaviconType.OpenGraphImage),
