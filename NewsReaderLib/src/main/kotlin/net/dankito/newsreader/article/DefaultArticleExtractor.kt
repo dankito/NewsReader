@@ -4,6 +4,8 @@ import net.dankito.newsreader.AsyncResult
 import net.dankito.newsreader.model.Article
 import net.dankito.newsreader.model.ArticleSummaryItem
 import net.dankito.newsreader.summary.ArticleExtractorBase
+import net.dankito.newsreader.util.web.CookieHandling
+import net.dankito.newsreader.util.web.RequestParameters
 import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
@@ -50,6 +52,14 @@ class DefaultArticleExtractor : ArticleExtractorBase(), IArticleExtractor {
         }
 
         return null
+    }
+
+    override fun createParametersForUrl(url: String): RequestParameters {
+        val parameters = super.createParametersForUrl(url)
+
+        parameters.cookieHandling = CookieHandling.ACCEPT_ALL_ONLY_FOR_THIS_CALL // some site like New York Times require that cookies are enabled
+
+        return parameters
     }
 
     override fun parseHtmlToArticle(document: Document, url: String): Article? {
