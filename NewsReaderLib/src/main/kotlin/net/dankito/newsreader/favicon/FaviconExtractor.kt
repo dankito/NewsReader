@@ -152,7 +152,7 @@ class FaviconExtractor {
     private fun mapSizeString(sizeString: String) : Size? {
         var parts = sizeString.split('x')
         if(parts.size != 2) {
-            parts = sizeString.split('×')
+            parts = sizeString.split('×') // actually doesn't meet specification, see https://www.w3schools.com/tags/att_link_sizes.asp, but New York Times uses it
         }
         if(parts.size != 2) {
             parts = sizeString.split('X')
