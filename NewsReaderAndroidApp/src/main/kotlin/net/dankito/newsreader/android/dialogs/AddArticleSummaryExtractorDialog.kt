@@ -87,13 +87,25 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
     }
 
     private fun feedAdded(feedUrl: String, summary: FeedArticleSummary) {
+        activity.runOnUiThread {
+            val askExtractorNameDialog = AskExtractorNameDialog()
+
+            askExtractorNameDialog.askForName(activity, summary.title ?: "", false) { didSelectName, selectedName ->
+                val selectedExtractorName = if(didSelectName) selectedName ?: "" else summary.title ?: ""
+
+                feedAdded(feedUrl, summary, selectedExtractorName)
+            }
+        }
+    }
+
+    private fun feedAdded(feedUrl: String, summary: FeedArticleSummary, selectedExtractorName: String) {
+        summary.title = selectedExtractorName
+
         extractorsConfigManager.addFeed(feedUrl, summary)
 
-        activity.runOnUiThread {
-            showArticleSummaryActivity(feedUrl, summary)
+        showArticleSummaryActivity(feedUrl, summary)
 
-            dismiss()
-        }
+        dismiss()
     }
 
     private fun showArticleSummaryActivity(feedUrl: String, summary: FeedArticleSummary) {
