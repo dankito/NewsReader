@@ -225,6 +225,8 @@ public class ArticleTextExtractor {
         removeSelectsAndOptions(doc);
 //        removeScripts(doc);
         removeStyles(doc);
+
+        removeAds(doc);
     }
 
     /**
@@ -280,6 +282,10 @@ public class ArticleTextExtractor {
         }
 
         return doc;
+    }
+
+    private static void removeAds(Document doc) {
+        doc.select(".ad").remove(); // remove all elements with class 'ad'
     }
 
     /**
