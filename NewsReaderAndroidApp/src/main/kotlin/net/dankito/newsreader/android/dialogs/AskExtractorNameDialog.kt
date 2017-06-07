@@ -1,7 +1,6 @@
 package net.dankito.newsreader.android.dialogs
 
 import android.content.Context
-import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import android.widget.EditText
@@ -18,13 +17,13 @@ class AskExtractorNameDialog {
         var input: EditText? = null
 
         if(showCancelButton) {
-            builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which ->
+            builder.setNegativeButton(android.R.string.cancel, { dialog, _ ->
                 dialog.cancel()
                 callback(false, null)
             })
         }
 
-        builder.setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(android.R.string.ok, { dialog, _ ->
             dialog.cancel()
             callback(true, input?.text.toString())
         })
@@ -42,9 +41,9 @@ class AskExtractorNameDialog {
 
         input.selectAll()
 
-        input.setOnFocusChangeListener { view, hasFocus ->
+        input.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus) {
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+                dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             }
         }
     }
