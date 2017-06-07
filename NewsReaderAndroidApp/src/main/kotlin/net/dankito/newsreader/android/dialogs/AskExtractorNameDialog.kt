@@ -3,6 +3,7 @@ package net.dankito.newsreader.android.dialogs
 import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.view.WindowManager
 import android.widget.EditText
 import kotlinx.android.synthetic.main.dialog_ask_extractor_name.*
 import net.dankito.newsreader.R
@@ -32,8 +33,19 @@ class AskExtractorNameDialog {
         dialog.show()
 
         input = dialog.edtxtAskExtractorName
+
+        configureEditText(input, dialog, currentName)
+    }
+
+    private fun configureEditText(input: EditText, dialog: AlertDialog, currentName: String) {
         input.setText(currentName)
+
         input.selectAll()
-        input.requestFocus()
+
+        input.setOnFocusChangeListener { view, hasFocus ->
+            if(hasFocus) {
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ListView
 import kotlinx.android.synthetic.main.dialog_add_article_summary_extractor.view.*
 import net.dankito.newsreader.AsyncResult
@@ -50,6 +51,12 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
             this.lstFeedSearchResults = view.lstFeedSearchResults
             view.lstFeedSearchResults.adapter = feedAddressesAdapter
             view.lstFeedSearchResults.setOnItemClickListener { _, _, position, _ -> foundFeedAddressSelected(position) }
+
+            view.edtxtFeedOrWebsiteUrl.setOnFocusChangeListener { view, hasFocus ->
+                if(hasFocus) {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+                }
+            }
         }
 
         return view
