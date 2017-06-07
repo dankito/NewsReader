@@ -10,6 +10,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ListView
 import kotlinx.android.synthetic.main.dialog_add_article_summary_extractor.view.*
+import net.dankito.newsreader.AsyncResult
 import net.dankito.newsreader.R
 import net.dankito.newsreader.android.activities.ArticleSummaryActivity
 import net.dankito.newsreader.android.adapter.FoundFeedAddressesAdapter
@@ -70,20 +71,22 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
             }
             else {
                 feedAddressExtractor.extractFeedAddressesAsync(feedOrWebsiteUrl) { asyncResult ->
-                    if(asyncResult.result != null) {
-                        val feedAddresses = asyncResult.result as List<FeedAddress>;
-                        if(feedAddresses.size == 0) {
-                            showNoFeedAddressesFoundError(feedOrWebsiteUrl)
-                        }
-                        else {
-                            showFoundFeedAddresses(feedAddresses)
-                        }
-                    }
-                    else {
-                        asyncResult.error?.let { showError(feedOrWebsiteUrl, it) }
-                    }
+                    handleExtractFeedAddressesResult(feedOrWebsiteUrl, asyncResult)
                 }
             }
+        }
+    }
+
+    private fun handleExtractFeedAddressesResult(feedOrWebsiteUrl: String, asyncResult: AsyncResult<List<FeedAddress>>) {
+        if (asyncResult.result != null) {
+            val feedAddresses = asyncResult.result as List<FeedAddress>;
+            if (feedAddresses.size == 0) {
+                showNoFeedAddressesFoundError(feedOrWebsiteUrl)
+            } else {
+                showFoundFeedAddresses(feedAddresses)
+            }
+        } else {
+            asyncResult.error?.let { showError(feedOrWebsiteUrl, it) }
         }
     }
 
