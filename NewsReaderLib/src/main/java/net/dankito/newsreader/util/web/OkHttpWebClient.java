@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +32,8 @@ public class OkHttpWebClient implements IWebClient {
   private static final Logger log = LoggerFactory.getLogger(OkHttpWebClient.class);
 
 
+  protected CookieManager cookieManager = new CookieManager();
+
   // avoid creating several instances, should be singleton
   protected OkHttpClient client = new OkHttpClient();
 
@@ -37,6 +41,8 @@ public class OkHttpWebClient implements IWebClient {
   public OkHttpWebClient() {
     client.setFollowRedirects(true);
     client.setRetryOnConnectionFailure(true);
+
+    client.setCookieHandler(cookieManager);
   }
 
 
@@ -125,10 +131,32 @@ public class OkHttpWebClient implements IWebClient {
     else {
       client.setConnectTimeout(DEFAULT_CONNECTION_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
+
+    setCookieHandling(parameters);
+  }
+
+  private void setCookieHandling(RequestParameters parameters) {
+    switch(parameters.getCookieHandling()) {
+      case ACCEPT_ALL:
+      case ACCEPT_ALL_ONLY_FOR_THIS_CALL:
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        break;
+      case ACCEPT_ORIGINAL_SERVER:
+      case ACCEPT_ORIGINAL_SERVER_ONLY_FOR_THIS_CALL:
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        break;
+      default:
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_NONE);
+        break;
+    }
   }
 
   protected Response executeRequest(final RequestParameters parameters, Request request) throws Exception {
     Response response = client.newCall(request).execute();
+
+    if(parameters.getCookieHandling() == CookieHandling.ACCEPT_ALL_ONLY_FOR_THIS_CALL || parameters.getCookieHandling() == CookieHandling.ACCEPT_ORIGINAL_SERVER_ONLY_FOR_THIS_CALL) {
+      cookieManager.getCookieStore().removeAll();
+    }
 
     if(response.isSuccessful() == false && parameters.isCountConnectionRetriesSet()) {
       prepareConnectionRetry(parameters);
@@ -159,6 +187,7 @@ public class OkHttpWebClient implements IWebClient {
       return get(parameters);
     }
     else {
+      log.error("Could not request url " + parameters.getUrl(), e);
       return new WebClientResponse(e.getLocalizedMessage());
     }
   }

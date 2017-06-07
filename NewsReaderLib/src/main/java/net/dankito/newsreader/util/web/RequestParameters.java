@@ -16,6 +16,8 @@ public class RequestParameters {
 
   protected String userAgent;
 
+  protected CookieHandling cookieHandling = CookieHandling.ACCEPT_NONE;
+
   protected int connectionTimeoutMillis;
 
   protected int countConnectionRetries = 0;
@@ -81,6 +83,14 @@ public class RequestParameters {
 
   public void setUserAgent(String userAgent) {
     this.userAgent = userAgent;
+  }
+
+  public CookieHandling getCookieHandling() {
+    return cookieHandling;
+  }
+
+  public void setCookieHandling(CookieHandling cookieHandling) {
+    this.cookieHandling = cookieHandling;
   }
 
   public boolean isConnectionTimeoutSet() {
