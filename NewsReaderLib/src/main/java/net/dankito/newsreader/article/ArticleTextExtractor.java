@@ -90,6 +90,8 @@ public class ArticleTextExtractor {
         }
 
         if (bestMatchElement != null) {
+            loadLazyLoadingElements(bestMatchElement);
+
             String ret = bestMatchElement.toString();
             if (ogImage != null && !ret.contains(ogImage)) {
                 ret = "<img src=\""+ogImage+"\"><br>\n"+ret;
@@ -211,6 +213,23 @@ public class ArticleTextExtractor {
             weight -= 50;
         return weight;
     }
+
+
+    private static void loadLazyLoadingElements(Element element) {
+        for(Element lazyLoadingElement : element.select("[data-src]")) {
+            String source = lazyLoadingElement.attr("data-src");
+
+            switch(lazyLoadingElement.nodeName()) {
+                case "img":
+                    lazyLoadingElement.attr("src", source);
+                    break;
+                default:
+                    lazyLoadingElement.attr("src", source);
+                    break;
+            }
+        }
+    }
+
 
     /**
      * Prepares document. Currently only stipping unlikely candidates, since
