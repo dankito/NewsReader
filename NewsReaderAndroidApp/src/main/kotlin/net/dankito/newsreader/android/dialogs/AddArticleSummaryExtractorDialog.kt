@@ -102,11 +102,13 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
     private fun feedAdded(feedUrl: String, summary: FeedArticleSummary, selectedExtractorName: String) {
         summary.title = selectedExtractorName
 
-        extractorsConfigManager.addFeed(feedUrl, summary)
+        extractorsConfigManager.addFeed(feedUrl, summary) {
+            activity.runOnUiThread {
+                showArticleSummaryActivity(feedUrl, summary)
 
-        showArticleSummaryActivity(feedUrl, summary)
-
-        dismiss()
+                dismiss()
+            }
+        }
     }
 
     private fun showArticleSummaryActivity(feedUrl: String, summary: FeedArticleSummary) {

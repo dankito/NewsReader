@@ -107,13 +107,15 @@ class ArticleSummaryExtractorConfigManager(val fileStorageService: IFileStorageS
     }
 
 
-    fun addFeed(feedUrl: String, summary: FeedArticleSummary) {
+    fun addFeed(feedUrl: String, summary: FeedArticleSummary, callback: (ArticleSummaryExtractorConfig?) -> Unit) {
         val extractor = FeedArticleSummaryExtractor(feedUrl)
 
         getIconForFeed(summary) {
             val config = ArticleSummaryExtractorConfig(extractor, feedUrl, summary.title ?: "", it)
 
             addConfig(config)
+
+            callback(config)
         }
     }
 
