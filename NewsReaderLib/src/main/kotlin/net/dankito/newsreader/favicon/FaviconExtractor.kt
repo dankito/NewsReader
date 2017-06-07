@@ -57,7 +57,23 @@ class FaviconExtractor {
     }
 
     fun extractFavicons(document: Document, url: String): List<Favicon> {
-        return document.head().select("link, meta").map { mapElementToFavicon(it, url) }.filterNotNull()
+        val extractedFavicons = document.head().select("link, meta").map { mapElementToFavicon(it, url) }.filterNotNull().toMutableList()
+
+        if(extractedFavicons.isEmpty()) {
+            tryToFindDefaultFavicon(url, extractedFavicons)
+        }
+
+        return extractedFavicons
+    }
+
+    private fun tryToFindDefaultFavicon(url: String, extractedFavicons: MutableList<Favicon>) {
+        val urlInstance = URL(url)
+        val defaultFaviconUrl = urlInstance.protocol + "://" + urlInstance.host + "/favicon.ico"
+        webClient.get(RequestParameters(defaultFaviconUrl, false)).let { response ->
+            if (response.isSuccessful) {
+                extractedFavicons.add(Favicon(defaultFaviconUrl, FaviconType.ShortcutIcon))
+            }
+        }
     }
 
     /**
