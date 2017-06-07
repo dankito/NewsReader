@@ -32,6 +32,11 @@ public class RequestParameters {
     this.contentType = ContentType.FORM_URL_ENCODED;
   }
 
+  public RequestParameters(String url, boolean hasStringResponse) {
+    this(url);
+    this.hasStringResponse = hasStringResponse;
+  }
+
   public RequestParameters(String url, String body) {
     this(url);
     this.body = body;
