@@ -23,6 +23,7 @@ import net.dankito.newsreader.rss.FeedReader
 import net.dankito.newsreader.serialization.ISerializer
 import net.dankito.newsreader.serialization.JacksonJsonSerializer
 import net.dankito.newsreader.summary.config.ArticleSummaryExtractorConfigManager
+import java.net.URI
 
 
 class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSummaryExtractorConfigManager) : DialogFragment() {
@@ -105,7 +106,20 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
             feedOrWebsiteUrl = "http:" + slashesToAdd + feedOrWebsiteUrl // TODO: what about https variant?
         }
 
+        mayShowEasterEgg(feedOrWebsiteUrl)
+
         return feedOrWebsiteUrl
+    }
+
+    private fun mayShowEasterEgg(enteredFeedOrWebsiteUrl: String) {
+        try {
+            val url = URI(enteredFeedOrWebsiteUrl)
+            if(url.host?.toLowerCase()?.contains("bild.de") ?: false) {
+                AlertDialog.Builder(activity).setMessage(R.string.bild_easter_egg)
+                        .setNegativeButton(android.R.string.ok, { dialog, which -> throw Exception("Du hast bild.de eingegeben") })
+                        .create().show()
+            }
+        } catch(ignored: Exception) { }
     }
 
     private fun handleExtractFeedAddressesResult(feedOrWebsiteUrl: String, asyncResult: AsyncResult<List<FeedAddress>>) {
