@@ -59,6 +59,7 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
 
         feedReader.readFeedAsync(feedAddress.url) {
             it.result?.let { feedAdded(feedAddress.url, it) }
+            it.error?.let { showError(feedAddress.url, it) }
         }
     }
 
