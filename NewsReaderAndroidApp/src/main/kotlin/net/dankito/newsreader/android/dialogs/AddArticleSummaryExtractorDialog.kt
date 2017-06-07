@@ -64,7 +64,9 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
         }
     }
 
-    private fun checkFeedOrWebsiteUrl(feedOrWebsiteUrl: String) {
+    private fun checkFeedOrWebsiteUrl(enteredFeedOrWebsiteUrl: String) {
+        val feedOrWebsiteUrl = sanitizeUrl(enteredFeedOrWebsiteUrl)
+
         feedReader.readFeedAsync(feedOrWebsiteUrl) {
             if(it.result != null) {
                 feedAdded(feedOrWebsiteUrl, it.result as FeedArticleSummary)
@@ -75,6 +77,24 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
                 }
             }
         }
+    }
+
+    private fun sanitizeUrl(enteredFeedOrWebsiteUrl: String): String {
+        var feedOrWebsiteUrl = enteredFeedOrWebsiteUrl
+
+        if(feedOrWebsiteUrl.startsWith("http") == false) {
+            if(feedOrWebsiteUrl.startsWith("www.") == false && feedOrWebsiteUrl.startsWith("/") == false) {
+                feedOrWebsiteUrl = "www." + feedOrWebsiteUrl
+            }
+
+            val slashesToAdd = if(feedOrWebsiteUrl.startsWith("//")) ""
+            else if(feedOrWebsiteUrl.startsWith("/")) "/"
+            else "//"
+
+            feedOrWebsiteUrl = "http:" + slashesToAdd + feedOrWebsiteUrl // TODO: what about https variant?
+        }
+
+        return feedOrWebsiteUrl
     }
 
     private fun handleExtractFeedAddressesResult(feedOrWebsiteUrl: String, asyncResult: AsyncResult<List<FeedAddress>>) {
