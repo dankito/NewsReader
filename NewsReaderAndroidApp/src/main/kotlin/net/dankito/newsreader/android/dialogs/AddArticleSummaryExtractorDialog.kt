@@ -10,6 +10,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ListView
+import android.widget.TextView
 import kotlinx.android.synthetic.main.dialog_add_article_summary_extractor.view.*
 import net.dankito.newsreader.AsyncResult
 import net.dankito.newsreader.R
@@ -40,6 +41,7 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
     private val feedAddressesAdapter = FoundFeedAddressesAdapter()
 
     private var lstFeedSearchResults: ListView? = null
+    private var txtFeedSearchResultsLabel: TextView? = null
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,11 +50,13 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
         view?.let { view ->
             view.btnCheckFeedOrWebsiteUrl?.setOnClickListener { checkFeedOrWebsiteUrl(view.edtxtFeedOrWebsiteUrl.text.toString()) }
 
+            txtFeedSearchResultsLabel = view.txtFeedSearchResultsLabel
+
             this.lstFeedSearchResults = view.lstFeedSearchResults
             view.lstFeedSearchResults.adapter = feedAddressesAdapter
             view.lstFeedSearchResults.setOnItemClickListener { _, _, position, _ -> foundFeedAddressSelected(position) }
 
-            view.edtxtFeedOrWebsiteUrl.setOnFocusChangeListener { view, hasFocus ->
+            view.edtxtFeedOrWebsiteUrl.setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
                     dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
                 }
@@ -154,6 +158,7 @@ class AddArticleSummaryExtractorDialog(val extractorsConfigManager: ArticleSumma
         activity.runOnUiThread {
             feedAddressesAdapter.setItems(result)
 
+            txtFeedSearchResultsLabel?.visibility = VISIBLE
             lstFeedSearchResults?.visibility = VISIBLE
         }
     }

@@ -33,11 +33,21 @@
         android:text="@string/dialog_add_article_summary_extractor_check_feed_or_website_url"
     />
 
+    <TextView
+        android:id="@+id/txtFeedSearchResultsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnCheckFeedOrWebsiteUrl"
+        android:layout_marginTop="@dimen/dialog_add_article_summary_extractor_label_feed_search_results_margin_top"
+        android:visibility="gone"
+        android:text="@string/dialog_add_article_summary_extractor_found_feeds"
+    />
+
     <ListView
         android:id="@+id/lstFeedSearchResults"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnCheckFeedOrWebsiteUrl"
+        android:layout_below="@+id/txtFeedSearchResultsLabel"
         android:layout_marginTop="@dimen/dialog_add_article_summary_extractor_listview_feed_search_results_margin_top"
         android:visibility="gone"
     />
