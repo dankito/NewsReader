@@ -21,14 +21,6 @@ class FaviconExtractorTest {
     }
 
     @Test
-    fun extractZeitFavicons() {
-        var extractedIcons1 = getFaviconsForUrl("http://www.zeit.de/")
-
-
-        testExtractedFavicons(extractedIcons1, 3)
-    }
-
-    @Test
     fun extractTheGuardianFavicons() {
         var extractedIcons = getFaviconsForUrl("https://www.theguardian.com")
 
@@ -42,6 +34,14 @@ class FaviconExtractorTest {
 
 
         testExtractedFavicons(extractedIcons, 5)
+    }
+
+    @Test
+    fun extractZeitFavicons() {
+        var extractedIcons = getFaviconsForUrl("http://www.zeit.de/")
+
+
+        testExtractedFavicons(extractedIcons, 3)
     }
 
     @Test
