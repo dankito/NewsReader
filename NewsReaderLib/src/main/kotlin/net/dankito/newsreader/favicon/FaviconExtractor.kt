@@ -126,15 +126,45 @@ class FaviconExtractor {
     private fun isMsTileMetaElement(metaElement: Element) = metaElement.hasAttr("name") && metaElement.attr("name") == "msapplication-TileImage" && metaElement.hasAttr("content")
 
 
-    private fun createFavicon(url: String?, siteUrl: String, iconType: FaviconType, sizeString: String?, type: String?): Favicon? {
+    private fun createFavicon(url: String?, siteUrl: String, iconType: FaviconType, sizesString: String?, type: String?): Favicon? {
         if(url != null) {
             val favicon = Favicon(makeLinkAbsolute(url, siteUrl), iconType, type = type)
 
-            if (sizeString != null) {
-                favicon.setSizeFromString(sizeString)
+            if (sizesString != null) {
+                val sizes = extractSizesFromString(sizesString)
+                if(sizes.isNotEmpty()) {
+                    favicon.size = sizes.sortedDescending().first()
+                }
             }
 
             return favicon
+        }
+
+        return null
+    }
+
+    private fun extractSizesFromString(sizesString: String): List<Size> {
+        val sizes = sizesString.split(" ").map { sizeString -> mapSizeString(sizeString) }.filterNotNull()
+
+        return sizes
+    }
+
+    private fun mapSizeString(sizeString: String) : Size? {
+        var parts = sizeString.split('x')
+        if(parts.size != 2) {
+            parts = sizeString.split('×')
+        }
+        if(parts.size != 2) {
+            parts = sizeString.split('X')
+        }
+
+        if (parts.size == 2) {
+            val width = parts[0].toIntOrNull()
+            val height = parts[1].toIntOrNull()
+
+            if (width != null && height != null) {
+                return Size(width, height)
+            }
         }
 
         return null
