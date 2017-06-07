@@ -75,8 +75,8 @@ class FaviconComparatorTest {
     fun getBestIconForNewYorkTimes() {
         val bestIcon = Favicon("https://static01.nyt.com/images/icons/t_logo_291_black.png", FaviconType.OpenGraphImage)
         val favicons = listOf<Favicon>(Favicon("https://static01.nyt.com/favicon.ico", FaviconType.ShortcutIcon),
-                                        Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed),
-                                        Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed),
+                                        Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed, Size(144, 144)),
+                                        Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed, Size(114, 114)),
                                         Favicon("https://static01.nyt.com/images/icons/ios-default-homescreen-57x57.png", FaviconType.AppleTouchPrecomposed),
                                         bestIcon)
 
@@ -86,10 +86,10 @@ class FaviconComparatorTest {
 
     @Test
     fun getBestIconWithMaxSize152ForNewYorkTimes() {
-        val bestIcon = Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed)
+        val bestIcon = Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed, Size(144, 144))
         val favicons = listOf<Favicon>(Favicon("https://static01.nyt.com/favicon.ico", FaviconType.ShortcutIcon),
                 Favicon("https://static01.nyt.com/images/icons/t_logo_291_black.png", FaviconType.OpenGraphImage),
-                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed),
+                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed, Size(114, 114)),
                 Favicon("https://static01.nyt.com/images/icons/ios-default-homescreen-57x57.png", FaviconType.AppleTouchPrecomposed),
                 bestIcon)
 
@@ -102,8 +102,8 @@ class FaviconComparatorTest {
         val bestIcon = Favicon("https://static01.nyt.com/images/icons/ios-default-homescreen-57x57.png", FaviconType.AppleTouchPrecomposed)
         val favicons = listOf<Favicon>(Favicon("https://static01.nyt.com/favicon.ico", FaviconType.ShortcutIcon),
                 Favicon("https://static01.nyt.com/images/icons/t_logo_291_black.png", FaviconType.OpenGraphImage),
-                Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed),
-                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed),
+                Favicon("https://static01.nyt.com/images/icons/ios-ipad-144x144.png", FaviconType.AppleTouchPrecomposed, Size(144, 144)),
+                Favicon("https://static01.nyt.com/images/icons/ios-iphone-114x144.png", FaviconType.AppleTouchPrecomposed, Size(114, 114)),
                 bestIcon)
 
         val result = underTest.getBestIcon(favicons, minSize = 32, maxSize = 112)
@@ -113,7 +113,7 @@ class FaviconComparatorTest {
     @Test
     fun getBestIconForDieZeit() {
         val bestIcon = Favicon("http://img.zeit.de/static/img/zo-icon-win8-144x144.png", FaviconType.MsTileImage)
-        val favicons = listOf<Favicon>(Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon),
+        val favicons = listOf<Favicon>(Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon, Size(32, 32)),
                 Favicon("http://img.zeit.de/static/img/ZO-ipad-114x114.png", FaviconType.AppleTouchPrecomposed),
                 bestIcon)
 
@@ -125,7 +125,7 @@ class FaviconComparatorTest {
     fun getBestIconForDieZeitIncludingRssIcon() {
         val bestIcon = Favicon("http://img.zeit.de/bilder/elemente_01_06/logos/homepage_top.gif", FaviconType.Icon)
         val favicons = listOf<Favicon>(Favicon("http://img.zeit.de/static/img/zo-icon-win8-144x144.png", FaviconType.MsTileImage),
-                Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon),
+                Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon, Size(32, 32)),
                 Favicon("http://img.zeit.de/static/img/ZO-ipad-114x114.png", FaviconType.AppleTouchPrecomposed),
                 bestIcon)
 
@@ -137,7 +137,7 @@ class FaviconComparatorTest {
     fun getBestSquareIconForDieZeitIncludingRssIcon() {
         val bestIcon = Favicon("http://img.zeit.de/static/img/zo-icon-win8-144x144.png", FaviconType.MsTileImage)
         val favicons = listOf<Favicon>(Favicon("http://img.zeit.de/bilder/elemente_01_06/logos/homepage_top.gif", FaviconType.Icon),
-                Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon),
+                Favicon("http://www.zeit.de/favicon.ico", FaviconType.ShortcutIcon, Size(32, 32)),
                 Favicon("http://img.zeit.de/static/img/ZO-ipad-114x114.png", FaviconType.AppleTouchPrecomposed),
                 bestIcon)
 
