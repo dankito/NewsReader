@@ -20,10 +20,7 @@ abstract class ExtractorBase {
 
 
     protected fun requestUrl(url: String): Document {
-        val parameters = RequestParameters(url)
-        parameters.userAgent = DEFAULT_USER_AGENT
-        parameters.connectionTimeoutMillis = DEFAULT_CONNECTION_TIMEOUT_MILLIS
-        parameters.countConnectionRetries = 2
+        val parameters = createParametersForUrl(url)
 
         webClient.get(parameters).let { response ->
             if(response.isSuccessful) {
@@ -33,6 +30,16 @@ abstract class ExtractorBase {
                 throw Exception(response.error)
             }
         }
+    }
+
+    protected open fun createParametersForUrl(url: String): RequestParameters {
+        val parameters = RequestParameters(url)
+
+        parameters.userAgent = DEFAULT_USER_AGENT
+        parameters.connectionTimeoutMillis = DEFAULT_CONNECTION_TIMEOUT_MILLIS
+        parameters.countConnectionRetries = 2
+
+        return parameters
     }
 
 
